@@ -226,7 +226,7 @@ composer require league/flysystem-aws-s3-v3
 ```
 
 ## TODO
--[ ] OSS 服务端签名后直传
+- [ ] OSS 服务端签名后直传
 
 ## License
 
