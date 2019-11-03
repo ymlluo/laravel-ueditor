@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'disk' => 'oss',
+    'disk' => 'public',
     'spit_size' => 10 * 1024 * 1024, //超过10M 的文件上传到 OSS、COS、AWS S3、七牛 等时，使用分片上传
     'route' => [
         'url' => '/serv/ueditor/v1/server', //服务端地址，需要修改前端 ueditor.config.js 中的 serverUrl

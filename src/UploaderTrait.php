@@ -23,7 +23,7 @@ trait UploaderTrait
         $adapter = $this->driver->getAdapter();
         $fullName = ltrim($path . $filename, '/');
         if ($file->getSize() < $this->spit_size) {
-          return  $this->storage->putFileAs($path,$file,$filename,$this->disk);
+          return  $this->storage->putFileAs($path,$file,$filename,$options);
 
         } else {
             if ($adapter instanceof AwsS3Adapter) {

@@ -30,7 +30,7 @@ $ composer require ymlluo/laravel-ueditor
 ```
 3.发布配置文件
 ```$xslt
-php artisan vendor:publish --provider= "ymlluo\\Ueditor\\UeditorServiceProvider"
+php artisan vendor:publish --provider="ymlluo\\Ueditor\\UeditorServiceProvider"
 ```
 4.如果使用资源管理功能，需要运行 `php artisan migrate` 生成数据库中的表， 修改 config/ueditor.php 配置如下：
 ```php
