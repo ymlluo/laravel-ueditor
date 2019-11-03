@@ -53,7 +53,7 @@ php artisan vendor:publish --provider="ymlluo\\Ueditor\\UeditorServiceProvider"
     'route' => [
         'url' => '/serv/ueditor/v1/server', //服务端地址，需要修改前端 ueditor.config.js 中的 serverUrl
         'options' => [
-//            'middleware' => ['auth'] //正式环境建议取消注释，使用 auth middleware
+//            'middleware' => ['web','auth'] //正式环境建议取消注释，使用 auth middleware
         ],
         'cors' =>"*" // 默认支持所有跨域请求，支持指定origin 例如 ['http://www.baidu.com'],false 为关闭跨域请求
     ],
