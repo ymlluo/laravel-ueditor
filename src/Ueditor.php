@@ -80,7 +80,7 @@ class Ueditor
         $filename = $this->formatFilename($file, $config['filename']);
         $fullName = $path . $filename;
         $this->uploader($path, $filename, $file);
-        $url = $this->url($fullName, $this->getExpire());
+        $url = $this->url($fullName,$this->getDiskConfig('visibility'), $this->getExpire());
         $data = [
             'state' => 'SUCCESS',
             'pathname' => $path,
@@ -260,11 +260,11 @@ class Ueditor
         return $visibility == 'private';
     }
 
-    protected function getDiskConfig($key)
+    protected function getDiskConfig($key,$default = null)
     {
         $configs = (array)config('filesystems.disks.' . $this->disk);
         if ($key) {
-            return $configs[$key] ?? null;
+            return $configs[$key] ?? $default;
         }
         return $configs;
     }
@@ -276,7 +276,7 @@ class Ueditor
     protected function getExpire(int $expiration = 0)
     {
 
-        return $expiration ?: $this->getDiskConfig('expiration');
+        return $expiration ?: $this->getDiskConfig('expiration',0);
     }
 
     /**
