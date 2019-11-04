@@ -13,6 +13,13 @@ trait UrlGenerateTrait
 {
 
 
+    /**
+     * @param string $path
+     * @param string $visibility
+     * @param int $expiration
+     * @param array $options
+     * @return string|string[]|null
+     */
     public function url(string $path, string $visibility = '', int $expiration = 0, array $options = [])
     {
         if ($this->isSignUrl($visibility)) {
