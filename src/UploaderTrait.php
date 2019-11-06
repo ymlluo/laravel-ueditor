@@ -19,22 +19,26 @@ trait UploaderTrait
      */
     public function uploader($path, $filename, UploadedFile $file)
     {
-        $options = ['disk'=>$this->disk,'visibility'=>$this->getDiskConfig('visibility')];
-        $adapter = $this->driver->getAdapter();
-        $fullName = ltrim($path . $filename, '/');
-        if ($file->getSize() < $this->spit_size) {
-          return  $this->storage->putFileAs($path,$file,$filename,$options);
+        try {
+            $options = ['disk' => $this->disk, 'visibility' => $this->getDiskConfig('visibility')];
+            $adapter = $this->driver->getAdapter();
+            $fullName = ltrim($path . $filename, '/');
+            if ($file->getSize() < $this->spit_size) {
+                return $this->storage->putFileAs($path, $file, $filename, $options);
 
-        } else {
-            if ($adapter instanceof AwsS3Adapter) {
-                return $this->uploadMultiAws($adapter, $fullName, $file);
-            } elseif ($adapter instanceof AliOssAdapter) {
-                return $this->uploadMultiOss($adapter, $fullName, $file);
-            } elseif ($adapter instanceof CosAdapter) {
-                return $this->uploadMultiCos($adapter, $fullName, $file);
             } else {
-                return  $this->storage->putFileAs($path,$file,$filename,$options);
+                if ($adapter instanceof AwsS3Adapter) {
+                    return $this->uploadMultiAws($adapter, $fullName, $file);
+                } elseif ($adapter instanceof AliOssAdapter) {
+                    return $this->uploadMultiOss($adapter, $fullName, $file);
+                } elseif ($adapter instanceof CosAdapter) {
+                    return $this->uploadMultiCos($adapter, $fullName, $file);
+                } else {
+                    return $this->storage->putFileAs($path, $file, $filename, $options);
+                }
             }
+        } catch (\Exception $exception) {
+            return false;
         }
 
     }
@@ -71,8 +75,8 @@ trait UploaderTrait
     {
         try {
             $client = $adapter->getClient();
-            $options = ['x-oss-object-acl'=>$this->getAcl()];
-            $data = $client->multiuploadFile($adapter->getBucket(), $fullName, $file->getRealPath(),$options);
+            $options = ['x-oss-object-acl' => $this->getAcl()];
+            $data = $client->multiuploadFile($adapter->getBucket(), $fullName, $file->getRealPath(), $options);
             return $data;
         } catch (\Exception $exception) {
             return false;
@@ -95,13 +99,14 @@ trait UploaderTrait
             $fullName,
             $file, [
                 'min_part_size' => $this->spit_size,
-                'ACL'=>$this->getAcl()
+                'ACL' => $this->getAcl()
             ]
         );
         return $data;
     }
 
-    protected function getAcl(){
+    protected function getAcl()
+    {
         $acl = $this->isSignUrl() ? 'private' : 'public-read';
         return $acl;
     }

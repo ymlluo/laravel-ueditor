@@ -79,7 +79,11 @@ class Ueditor
         $path = $this->formatPath($config['path']);
         $filename = $this->formatFilename($file, $config['filename']);
         $fullName = $path . $filename;
-        $this->uploader($path, $filename, $file);
+        $result =$this->uploader($path, $filename, $file);
+        if (!$result){
+            return $this->fail('file upload error');
+        }
+
         $url = $this->url($fullName,$this->getDiskConfig('visibility'), $this->getExpire());
         $data = [
             'state' => 'SUCCESS',
@@ -247,7 +251,7 @@ class Ueditor
      */
     protected function fail($message)
     {
-        return response()->json(['state' => __($message)], 256);
+        return response()->json(['state' => __($message)], 200,[],256);
     }
 
     /**
