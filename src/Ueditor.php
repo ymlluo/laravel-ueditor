@@ -86,7 +86,7 @@ class Ueditor
             'url' => $url,
             'creator_uid' => intval(auth()->id())
         ];
-        $data = array_merge($fileInfo,$data);
+        $data = array_merge($fileInfo, $data);
         event(new FileUploaded($data));
         return response()->json($data);
     }
@@ -328,15 +328,17 @@ class Ueditor
     protected function formatFilename(UploadedFile $file, $config)
     {
         $originName = $file->getClientOriginalName();
-        $originName = preg_replace('/[^0-9a-z-_\.]/is', '_', $originName);
+        $originName = preg_replace('/[^0-9a-z-_\.]/is', Str::random(1), $originName);
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
-            return Str::random($len) . '.' . $file->getClientOriginalExtension();
+            $filename = Str::random($len) . '.' . $file->getClientOriginalExtension();
+        } elseif (preg_match('/{filename}/is', $config)) {
+            $filename = $originName;
+        } else {
+            $filename = Str::random(6) . '_' . $originName;
         }
-        if (preg_match('/{filename}/is', $config)) {
-            return $originName;
-        }
-        return Str::random(6) . '_' . $originName;
+        return strtolower($filename);
+
     }
 
     /**
@@ -367,8 +369,8 @@ class Ueditor
             $data['height'] = intval($info[1] ?? 0);
         }
         $data['size'] = $file->getSize();
+        $data['original'] = $file->getClientOriginalName();
         $data['title'] = $file->getClientOriginalName();
-        $data['origin'] = $file->getClientOriginalName();
         $data['extension'] = $file->getClientOriginalExtension();
         $data['mime_type'] = $file->getMimeType();
         $data['sha1'] = sha1_file($file->getRealPath());

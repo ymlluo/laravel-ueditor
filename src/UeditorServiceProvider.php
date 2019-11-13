@@ -15,7 +15,7 @@ class UeditorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/views', 'ueditor');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-ueditor');
 
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'ymlluo');
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
@@ -27,7 +27,11 @@ class UeditorServiceProvider extends ServiceProvider
             $router->any(config('ueditor.route.url', '/serv/ueditor/server'), 'ServiceController@serve')->middleware(EditorCrossRequest::class);
         });
         if (config('ueditor.resource.enable')){
+
             Event::listen(FileUploaded::class,UploadResourceSave::class);
+            $router->group(array_merge(['namespace' => __NAMESPACE__], config('ueditor.route.options', [])), function ($router) {
+                $router->any(config('ueditor.resource.manager_url', '/serv/resource/manager/index'), 'Controllers\ResourceManagerController@index')->middleware(EditorCrossRequest::class);
+            });
         }
     }
 

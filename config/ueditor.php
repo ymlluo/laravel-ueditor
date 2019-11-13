@@ -14,6 +14,7 @@ return [
         'enable' => true,//设置为 true 标示使用资源表存储记录。首次安装会需要运行 php artisan migrate
         'file_unique'=>true,//根据文件的sha1 判断，如果已经存在直接返回已经存在的文件信息，防止重复上传
         'custom_table' => '', //默认上传的表名为 upload_resources,可以自定义表名,
+        'manager_url' =>'/serv/resource/manager/index'
     ],
     'upload_configs' => [
         /* 前后端通信相关的配置,注释只允许使用多行方式 */

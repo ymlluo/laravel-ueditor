@@ -4,6 +4,7 @@ namespace ymlluo\Ueditor\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 
 class UploadResource extends Model
 {
@@ -16,6 +17,8 @@ class UploadResource extends Model
     const FILE_TYPE_TEXT = 500;
     const FILE_TYPE_OTHER = 600;
 
+    const TABLE_FIELDS_KEY = 'ueditor:resource:manager:tables:fields';
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -25,51 +28,35 @@ class UploadResource extends Model
     }
 
     /**
-     * table fields
-     * @var array
+     * get resource table field
+     * @return mixed
      */
-    private $_fields = [
-        'id',
-        'title',
-        'original',
-        'filename',
-        'pathname',
-        'thumbnail',
-        'url',
-        'sha1',
-        'extension',
-        'mime_type',
-        'file_type',
-        'width',
-        'height',
-        'size',
-        'extend',
-        'creator_uid',
-        'created_at',
-        'updated_at'
-    ];
-
-    public function getFields()
+    public static function getFields()
     {
-        return $this->_fields;
+        $self = new self();
+        return $self->getConnection()->getSchemaBuilder()->getColumnListing($self->getTable());
     }
 
 
     /**
-     * 保存文件信息
+     * save file info
      * @param array $fileInfo
      */
     public static function store(array $fileInfo)
     {
-        $resource = new UploadResource();
-        $fields = $resource->getFields();
+
+        $fields = self::getFields();
         foreach ($fileInfo as $key => $item) {
-            if (in_array($fields[$key])) {
-                $resource->{$key} = is_array($item) ? json_encode($item) : $item;
+            if (in_array($key, $fields)) {
+                $data[$key] = is_array($item) ? json_encode($item, 256) : $item;
             }
         }
-        return $resource->save();
 
+        if ($data){
+            $data['file_type'] = self::getTypeByMimeType($data['mime_type']);
+            return UploadResource::query()->create($data);
+        }
+        return false;
     }
 
     /**

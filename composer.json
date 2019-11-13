@@ -28,6 +28,11 @@
             "ymlluo\\Ueditor\\": "src/"
         }
     },
+    "scripts": {
+        "post-package-update": [
+            "ymlluo\\Ueditor\\UploadResource::clearCache"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [
