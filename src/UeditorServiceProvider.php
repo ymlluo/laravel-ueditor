@@ -15,6 +15,8 @@ class UeditorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadViewsFrom(__DIR__.'/views', 'ueditor');
+
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'ymlluo');
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
         if ($this->app->runningInConsole()) {
@@ -39,6 +41,7 @@ class UeditorServiceProvider extends ServiceProvider
         $configPath = __DIR__ . '/../config/ueditor.php';
         $this->mergeConfigFrom($configPath, 'ueditor');
         $this->publishes([$configPath => config_path('ueditor.php')], 'config');
+
         // Register the service the package provides.
         $this->app->singleton('ueditor', function ($app) {
             return new Ueditor;

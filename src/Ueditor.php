@@ -1,6 +1,5 @@
 <?php namespace ymlluo\Ueditor;
 
-use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
@@ -47,10 +46,10 @@ class Ueditor
         $action = $request->get('action');
         $config = $this->getConfigByActionName($action);
         $field_name = $config['field_name'];
-        if($this->getNameByAction($action) == 'scrawlActionName'){
+        if ($this->getNameByAction($action) == 'scrawlActionName') {
             $str = base64_decode($request->get($field_name));
             $file = $this->createPng($str);
-        }else{
+        } else {
             $file = $request->file($field_name);
             if (!$file->isValid($field_name)) {
                 return $this->fail('file invalid');
@@ -62,46 +61,33 @@ class Ueditor
         if ($file->getSize() > $config['max_size']) {
             return $this->fail('file size is too large');
         }
-
-        $sha1 = sha1_file($file->getRealPath());
+        $fileInfo = $this->getFileInfo($file);
         if ($this->isResourceEnable()) {
-            $resource = UploadResource::query()->where('sha1', $sha1)->first();
+            $resource = UploadResource::query()->where('sha1', $fileInfo['sha1'])->first();
             if ($resource) {
                 $data = $resource->toArray();
                 $data['state'] = 'SUCCESS';
                 return response()->json($data);
             }
         }
-        $size = $file->getSize();
-        $name = $file->getClientOriginalName();
-        $extension = '.' . $file->getClientOriginalExtension();
-        $mime_type = $file->getMimeType();
         $path = $this->formatPath($config['path']);
         $filename = $this->formatFilename($file, $config['filename']);
         $fullName = $path . $filename;
-        $result =$this->uploader($path, $filename, $file);
-        if (!$result){
+        $result = $this->uploader($path, $filename, $file);
+        if (!$result) {
             return $this->fail('file upload error');
         }
 
-        $url = $this->url($fullName,$this->getDiskConfig('visibility'), $this->getExpire());
+        $url = $this->url($fullName, $this->getDiskConfig('visibility'), $this->getExpire());
         $data = [
             'state' => 'SUCCESS',
             'pathname' => $path,
             'filename' => $filename,
             'url' => $url,
-            'title' => $name,
-            'original' => $name,
-            'type' => $extension,
-            'extension' => $extension,
-            'mime_type' => $mime_type,
-            'size' => $size,
-            'sha1' => $sha1,
             'creator_uid' => intval(auth()->id())
         ];
+        $data = array_merge($fileInfo,$data);
         event(new FileUploaded($data));
-
-
         return response()->json($data);
     }
 
@@ -251,7 +237,7 @@ class Ueditor
      */
     protected function fail($message)
     {
-        return response()->json(['state' => __($message)], 200,[],256);
+        return response()->json(['state' => __($message)], 200, [], 256);
     }
 
     /**
@@ -264,7 +250,7 @@ class Ueditor
         return $visibility == 'private';
     }
 
-    protected function getDiskConfig($key,$default = null)
+    protected function getDiskConfig($key, $default = null)
     {
         $configs = (array)config('filesystems.disks.' . $this->disk);
         if ($key) {
@@ -280,7 +266,7 @@ class Ueditor
     protected function getExpire(int $expiration = 0)
     {
 
-        return $expiration ?: $this->getDiskConfig('expiration',0);
+        return $expiration ?: $this->getDiskConfig('expiration', 0);
     }
 
     /**
@@ -353,11 +339,41 @@ class Ueditor
         return Str::random(6) . '_' . $originName;
     }
 
-    protected function createPng($string){
-        $filename =Str::random(16).'.png';
-        $tmpFile = sys_get_temp_dir().'/'.$filename;
-        file_put_contents($tmpFile,$string);
-        return new UploadedFile($tmpFile,$filename,'image/png');
+    /**
+     * create tmp png file from base64 string
+     * @param $string
+     * @return UploadedFile
+     */
+    protected function createPng($string)
+    {
+        $filename = Str::random(16) . '.png';
+        $tmpFile = sys_get_temp_dir() . '/' . $filename;
+        file_put_contents($tmpFile, $string);
+        return new UploadedFile($tmpFile, $filename, 'image/png');
+    }
+
+
+    /**
+     * get file info
+     * @param UploadedFile $file
+     * @return array
+     */
+    protected function getFileInfo(UploadedFile $file)
+    {
+        $data = array_fill_keys(['width', 'height'], 0);
+        if (strpos($file->getMimeType(), 'image') === 0) {
+            $info = (array)getimagesize($file->getRealPath());
+            $data['width'] = intval($info[0] ?? 0);
+            $data['height'] = intval($info[1] ?? 0);
+        }
+        $data['size'] = $file->getSize();
+        $data['title'] = $file->getClientOriginalName();
+        $data['origin'] = $file->getClientOriginalName();
+        $data['extension'] = $file->getClientOriginalExtension();
+        $data['mime_type'] = $file->getMimeType();
+        $data['sha1'] = sha1_file($file->getRealPath());
+        return $data;
+
     }
 
 

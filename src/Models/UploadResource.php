@@ -24,6 +24,36 @@ class UploadResource extends Model
         }
     }
 
+    /**
+     * table fields
+     * @var array
+     */
+    private $_fields = [
+        'id',
+        'title',
+        'original',
+        'filename',
+        'pathname',
+        'thumbnail',
+        'url',
+        'sha1',
+        'extension',
+        'mime_type',
+        'file_type',
+        'width',
+        'height',
+        'size',
+        'extend',
+        'creator_uid',
+        'created_at',
+        'updated_at'
+    ];
+
+    public function getFields()
+    {
+        return $this->_fields;
+    }
+
 
     /**
      * 保存文件信息
@@ -31,19 +61,15 @@ class UploadResource extends Model
      */
     public static function store(array $fileInfo)
     {
-        $data = [];
-        $data['original'] = $fileInfo['original'] ?? '';
-        $data['filename'] = $fileInfo['filename'] ?? '';
-        $data['pathname'] = $fileInfo['pathname'] ?? '';
-        $data['url'] = $fileInfo['url'] ?? '';
-        $data['sha1'] = $fileInfo['sha1'] ?? '';
-        $data['mime_type'] = $fileInfo['mime_type'] ?? '';
-        $data['extension'] = $fileInfo['extension'] ?? 0;
-        $data['file_type'] = self::getTypeByMimeType($data['mime_type']);
-        $data['size'] = $fileInfo['size'] ?? '';
-        $data['extend'] = $fileInfo['extend'] ?? '[]';
-        $data['creator_uid'] = $fileInfo['creator_uid'] ?? 0;
-        UploadResource::query()->create($data);
+        $resource = new UploadResource();
+        $fields = $resource->getFields();
+        foreach ($fileInfo as $key => $item) {
+            if (in_array($fields[$key])) {
+                $resource->{$key} = is_array($item) ? json_encode($item) : $item;
+            }
+        }
+        return $resource->save();
+
     }
 
     /**
@@ -155,7 +181,7 @@ class UploadResource extends Model
         $paths = (array)$path;
         foreach ($paths as $fullName) {
             if (preg_match('/^(.*\/)(.*)/is', $fullName, $matchs)) {
-                $pathname = '/'.ltrim($matchs['1'],'/');
+                $pathname = '/' . ltrim($matchs['1'], '/');
                 UploadResource::query()->where(['pathname' => $pathname, 'filename' => $matchs[2]])->delete();
             }
         }
@@ -170,8 +196,8 @@ class UploadResource extends Model
     public static function updateUrl($path, $url)
     {
         if (preg_match('/^(.*\/)(.*)/is', $path, $matchs)) {
-            $pathname = '/'.ltrim($matchs['1'],'/');
-            return UploadResource::query()->where(['pathname' =>$pathname, 'filename' => $matchs[2]])->update(['url' => $url]);
+            $pathname = '/' . ltrim($matchs['1'], '/');
+            return UploadResource::query()->where(['pathname' => $pathname, 'filename' => $matchs[2]])->update(['url' => $url]);
         }
         return false;
     }
