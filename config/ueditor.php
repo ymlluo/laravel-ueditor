@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'disk' => 'public',
+    'disk' => 'oss',
     'spit_size' => 10 * 1024 * 1024, //超过10M 的文件上传到 OSS、COS、AWS S3、七牛 等时，使用分片上传
     'route' => [
         'url' => '/serv/ueditor/v1/server', //服务端地址，需要修改前端 ueditor.config.js 中的 serverUrl
@@ -92,6 +92,7 @@ return [
             '.ogg', '.ogv', '.mov', '.wmv', '.mp4', '.webm', '.mp3', '.wav', '.mid',
             '.rar', '.zip', '.tar', '.gz', '.7z', '.bz2', '.cab', '.iso',
             '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.pdf', '.txt', '.md', '.xml',
+            '.dmg','.apk'
         ], /* 上传文件格式显示 */
 
         /* 列出指定目录下的图片 */
@@ -113,6 +114,7 @@ return [
             '.ogg', '.ogv', '.mov', '.wmv', '.mp4', '.webm', '.mp3', '.wav', '.mid',
             '.rar', '.zip', '.tar', '.gz', '.7z', '.bz2', '.cab', '.iso',
             '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.pdf', '.txt', '.md', '.xml',
+            '.dmg','.apk'
         ], /* 列出的文件类型 */
     ],
 ];

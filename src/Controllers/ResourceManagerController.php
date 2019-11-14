@@ -23,9 +23,9 @@ class ResourceManagerController extends Controller
         $kw = \request()->get('kw');
         $items =UploadResource::query()->when($kw,function ($sql)use ($kw){
             $sql->where('filename',$kw);
-        })->paginate($size);
+        })->orderByDesc('id')->paginate($size);
 
-        return view('laravel-ueditor::resource_manager.index')->with(compact('items'));
+        return view('ueditor::resource_manager.index')->with(compact('items'));
     }
 
     /**

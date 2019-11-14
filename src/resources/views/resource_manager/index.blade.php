@@ -21,7 +21,10 @@
                     <thead>
                     <tr>
                         <th scope="col">素材 ID</th>
+                        <th scope="col">素材预览</th>
                         <th scope="col">素材名称</th>
+                        <th scope="col">素材类型</th>
+                        <th scope="col">文件大小</th>
                         <th scope="col">宽度</th>
                         <th scope="col">高度</th>
                         <th scope="col">创建时间</th>
@@ -35,16 +38,19 @@
                             {{--                        <td>{{$item->title}}</td>--}}
                             @switch($item->{'file_type'})
                                 @case(\ymlluo\Ueditor\Models\UploadResource::FILE_TYPE_IMAGE)
-                                <td><a data-fancybox href="{{ $item->{'url'} }}">{{$item->title}}</a></td>
+                                <td><a data-fancybox href="{{ $item->{'url'} }}"><img style="max-width: 100px;" class="img-responsive" src="{{$item->url}}"></a></td>
                                 @break
                                 @case(\ymlluo\Ueditor\Models\UploadResource::FILE_TYPE_VIDEO)
-                                <td><a data-fancybox data-width="640" data-height="360" href="{{$item->url}}">
-                                        {{$item->title}}
-                                    </a></td>
+                            <td></td>
+
+                                @break
+                                @default
+                            <td></td>
                                 @break
 
                             @endswitch
-
+                            <td>{{$item->title}}</td>
+                            <td class="text-center">{{$item->file_size}}</td>
                             <td class="text-center">{{$item->width}}px</td>
                             <td class="text-center"><span>{{$item->height}}px</span></td>
                             <td>{{$item->created_at}}</td>

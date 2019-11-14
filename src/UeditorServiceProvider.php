@@ -15,9 +15,8 @@ class UeditorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-ueditor');
-
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'ymlluo');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'ueditor');
+        $this->loadTranslationsFrom(__DIR__.'/translations', 'ueditor');
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();

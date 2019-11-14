@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use ymlluo\Ueditor\Events\FileUploaded;
@@ -52,9 +53,10 @@ class Ueditor
         } else {
             $file = $request->file($field_name);
             if (!$file->isValid($field_name)) {
-                return $this->fail('file invalid');
+//                return $this->fail('file invalid');
+                Log::info('file invalid',$file);
             }
-            if (!in_array('.' . $file->guessExtension(), $config['allow_files'])) {
+            if (!in_array('.' . $file->guessClientExtension(), $config['allow_files'])) {
                 return $this->fail('file type does not allowed');
             }
         }
@@ -103,7 +105,9 @@ class Ueditor
     public function listImages(int $start, int $size = 20, string $path = '', array $allowExtension = [])
     {
         $path = config('ueditor.upload_configs.imageManagerListPath');
-        $allowExtension = config('ueditor.upload_configs.imageManagerAllowFiles');
+        $allowExtension = array_map(function ($str) {
+            return substr($str, 1, strlen($str));
+        }, config('ueditor.upload_configs.imageManagerAllowFiles'));
         if ($this->isResourceEnable()) {
             return UploadResource::getImages($start, $size, $path, $allowExtension);
         }
@@ -123,7 +127,9 @@ class Ueditor
     public function listFiles(int $start, int $size = 20, string $path = '', array $allowExtension = [])
     {
         $path = $path ?: config('ueditor.upload_configs.fileManagerListPath');
-        $allowExtension = $allowExtension ?: config('ueditor.upload_configs.fileManagerAllowFiles');
+        $allowExtension = array_map(function ($str) {
+            return substr($str, 1, strlen($str));
+        }, config('ueditor.upload_configs.fileManagerAllowFiles'));
         if ($this->isResourceEnable()) {
             return UploadResource::getFiles($start, $size, $path, $allowExtension);
         }
@@ -327,8 +333,7 @@ class Ueditor
      */
     protected function formatFilename(UploadedFile $file, $config)
     {
-        $originName = $file->getClientOriginalName();
-        $originName = preg_replace('/[^0-9a-z-_\.]/is', Str::random(1), $originName);
+        $originName = Str::slug($file->getClientOriginalName(),'_');
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
             $filename = Str::random($len) . '.' . $file->getClientOriginalExtension();

@@ -4,12 +4,9 @@ namespace ymlluo\Ueditor\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Cache;
 
 class UploadResource extends Model
 {
-    protected $guarded = [];
-
     const FILE_TYPE_APPLICATION = 100;
     const FILE_TYPE_IMAGE = 200;
     const FILE_TYPE_AUDIO = 300;
@@ -18,6 +15,11 @@ class UploadResource extends Model
     const FILE_TYPE_OTHER = 600;
 
     const TABLE_FIELDS_KEY = 'ueditor:resource:manager:tables:fields';
+
+
+    protected $guarded = [];
+    protected $appends = ['file_type_name','file_size'];
+
 
     public function __construct(array $attributes = [])
     {
@@ -52,7 +54,7 @@ class UploadResource extends Model
             }
         }
 
-        if ($data){
+        if ($data) {
             $data['file_type'] = self::getTypeByMimeType($data['mime_type']);
             return UploadResource::query()->create($data);
         }
@@ -187,6 +189,37 @@ class UploadResource extends Model
             return UploadResource::query()->where(['pathname' => $pathname, 'filename' => $matchs[2]])->update(['url' => $url]);
         }
         return false;
+    }
+
+    public function getFileTypeNameAttribute()
+    {
+        $name = trans('unknown_type');
+        switch ($this->getAttribute('type')) {
+            case self::FILE_TYPE_IMAGE:
+                break;
+        }
+    }
+
+    /**
+     * get human file size
+     * @return string
+     */
+    public function getFileSizeAttribute()
+    {
+        return $this->formatBytes($this->getAttribute('size'));
+    }
+
+    /**
+     * get human file size
+     * @param $size
+     * @param int $precision
+     * @return string
+     */
+    function formatBytes($size, $precision = 2)
+    {
+        $base = log($size, 1024);
+        $suffixes = array('', 'KB', 'MB', 'GB', 'TB');
+        return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
     }
 
 
