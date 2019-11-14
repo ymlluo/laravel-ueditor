@@ -25,8 +25,7 @@
                         <th scope="col">素材名称</th>
                         <th scope="col">素材类型</th>
                         <th scope="col">文件大小</th>
-                        <th scope="col">宽度</th>
-                        <th scope="col">高度</th>
+                        <th scope="col">文件尺寸</th>
                         <th scope="col">创建时间</th>
                         <th scope="col">操作</th>
                     </tr>
@@ -38,24 +37,32 @@
                             {{--                        <td>{{$item->title}}</td>--}}
                             @switch($item->{'file_type'})
                                 @case(\ymlluo\Ueditor\Models\UploadResource::FILE_TYPE_IMAGE)
-                                <td><a data-fancybox href="{{ $item->{'url'} }}"><img style="max-width: 100px;" class="img-responsive" src="{{$item->url}}"></a></td>
+                                <td>
+                                    <a data-fancybox href="{{ $item->{'url'} }}"><img style="max-width: 100px;" class="img-responsive" src="{{$item->url}}"></a>
+                                </td>
                                 @break
                                 @case(\ymlluo\Ueditor\Models\UploadResource::FILE_TYPE_VIDEO)
-                            <td></td>
+                                <td><a data-fancybox data-width="640" data-height="360" href="{{ $item->{'url'} }}">
+                                        {{$item->title}}
+                                    </a></td>
 
                                 @break
                                 @default
-                            <td></td>
+                                <td><a target="_blank" href="{{ $item->{'url'} }}">
+                                        {{$item->title}}
+                                    </a></td>
                                 @break
 
                             @endswitch
                             <td>{{$item->title}}</td>
+                            <td class="text-center">{{$item->file_type_name}}</td>
                             <td class="text-center">{{$item->file_size}}</td>
-                            <td class="text-center">{{$item->width}}px</td>
-                            <td class="text-center"><span>{{$item->height}}px</span></td>
+                            <td class="text-center">@if($item->width){{$item->width}}*{{$item->height}} @else N/A @endif</td>
+
                             <td>{{$item->created_at}}</td>
                             <td>
-                                <button class="btn btn-primary btn-sm btn-copy" data-content="{{$item->url}}">复制链接</button>
+                                <button class="btn btn-primary btn-sm btn-copy" data-content="{{$item->url}}">复制链接
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -112,9 +119,9 @@
             new Noty({
                 text: 'Copy Success',
                 timeout: 100,
-                layout:'center',
-                type:'info',
-                progressBar:false,
+                layout: 'center',
+                type: 'info',
+                progressBar: false,
 
             }).show();
 

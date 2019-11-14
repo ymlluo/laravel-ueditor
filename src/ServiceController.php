@@ -12,6 +12,7 @@ class ServiceController extends Controller
 {
     public function serve(Request $request)
     {
+//        return phpinfo();
         $ueditor = app('ueditor');
         $action = $request->get('action');
         if ($action == 'config') {

@@ -193,11 +193,31 @@ class UploadResource extends Model
 
     public function getFileTypeNameAttribute()
     {
-        $name = trans('unknown_type');
-        switch ($this->getAttribute('type')) {
+
+        switch ($this->getAttribute('file_type')) {
+            case self::FILE_TYPE_APPLICATION:
+                $name = trans('ueditor::lang.application');
+                break;
             case self::FILE_TYPE_IMAGE:
+                $name =trans('ueditor::lang.image');
+                break;
+            case self::FILE_TYPE_AUDIO:
+                $name =trans('ueditor::lang.audio');
+                break;
+            case self::FILE_TYPE_VIDEO:
+                $name =trans('ueditor::lang.video');
+                break;
+            case self::FILE_TYPE_TEXT:
+                $name =trans('ueditor::lang.text');
+                break;
+            case  self::FILE_TYPE_OTHER:
+                $name =trans('ueditor::lang.other');
+                break;
+            default:
+                $name =trans('ueditor::lang.unknown_type');
                 break;
         }
+        return $name;
     }
 
     /**

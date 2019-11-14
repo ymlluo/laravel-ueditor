@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use ymlluo\Ueditor\Events\FileUploaded;
@@ -30,6 +29,7 @@ class Ueditor
         if ($this->disk == 'public' && !file_exists(public_path('storage'))) {
             Artisan::call('storage:link');
         }
+
     }
 
 
@@ -42,7 +42,7 @@ class Ueditor
     public function upload(Request $request)
     {
         if (!$request->isMethod('POST')) {
-            return $this->fail('upload file must use post method');
+            return $this->fail(trans('ueditor::lang.method_not_allowed'));
         }
         $action = $request->get('action');
         $config = $this->getConfigByActionName($action);
@@ -53,15 +53,14 @@ class Ueditor
         } else {
             $file = $request->file($field_name);
             if (!$file->isValid($field_name)) {
-//                return $this->fail('file invalid');
-                Log::info('file invalid',$file);
+                return $this->fail(trans('ueditor::lang.file_invalid'));
             }
-            if (!in_array('.' . $file->guessClientExtension(), $config['allow_files'])) {
-                return $this->fail('file type does not allowed');
+            if (!in_array('.' . strtolower($file->getClientOriginalExtension()), $config['allow_files'])) {
+                return $this->fail(trans('ueditor::lang.file_type_not_allowed'));
             }
         }
         if ($file->getSize() > $config['max_size']) {
-            return $this->fail('file size is too large');
+            return $this->fail(trans('ueditor::lang.file_size_exceeded'));
         }
         $fileInfo = $this->getFileInfo($file);
         if ($this->isResourceEnable()) {
@@ -77,7 +76,7 @@ class Ueditor
         $fullName = $path . $filename;
         $result = $this->uploader($path, $filename, $file);
         if (!$result) {
-            return $this->fail('file upload error');
+            return $this->fail(trans('ueditor::lang.file_upload_error'));
         }
 
         $url = $this->url($fullName, $this->getDiskConfig('visibility'), $this->getExpire());
@@ -333,10 +332,11 @@ class Ueditor
      */
     protected function formatFilename(UploadedFile $file, $config)
     {
-        $originName = Str::slug($file->getClientOriginalName(),'_');
+        $originExtension = $file->getClientOriginalExtension();
+        $originName = preg_replace('/[\/\<\>\{\}\*\$#\!]/','_',Str::before($file->getClientOriginalName(), $originExtension)). $originExtension;
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
-            $filename = Str::random($len) . '.' . $file->getClientOriginalExtension();
+            $filename = Str::random($len) . '.' . $originExtension;
         } elseif (preg_match('/{filename}/is', $config)) {
             $filename = $originName;
         } else {
