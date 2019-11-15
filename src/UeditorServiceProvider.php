@@ -30,6 +30,8 @@ class UeditorServiceProvider extends ServiceProvider
             Event::listen(FileUploaded::class,UploadResourceSave::class);
             $router->group(array_merge(['namespace' => __NAMESPACE__], config('ueditor.route.options', [])), function ($router) {
                 $router->get(config('ueditor.resource.route.index'), 'Controllers\ResourceManagerController@index')->name('resource.manager.index')->middleware(EditorCrossRequest::class);
+                $router->get(config('ueditor.resource.route.edit'), 'Controllers\ResourceManagerController@edit')->name('resource.manager.edit')->middleware(EditorCrossRequest::class);
+                $router->post(config('ueditor.resource.route.store'), 'Controllers\ResourceManagerController@store')->name('resource.manager.store')->middleware(EditorCrossRequest::class);
                 $router->delete(config('ueditor.resource.route.destroy'), 'Controllers\ResourceManagerController@destroy')->name('resource.manager.destroy')->middleware(EditorCrossRequest::class);
 
             });

@@ -191,7 +191,10 @@ class Ueditor
     public function deleteResource($path)
     {
         $path = ltrim($path, '/');
-        return $this->storage->delete($path);
+        if ($this->storage->exists($path)) {
+            return $this->storage->delete($path);
+        }
+        return true;
     }
 
 

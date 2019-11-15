@@ -13,11 +13,11 @@
     <title>{{__('ueditor::lang.resource_manager')}}</title>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-xs-12">
             <div class="table-responsive">
-                <table class="table table-sm table-hover table-bordered table-condensed table-striped">
+                <table class="table table-sm table-hover table-bordered table-condensed">
                     <thead>
                     <tr>
                         <th scope="col">{{__('ueditor::lang.id')}}</th>
@@ -54,15 +54,16 @@
                                 @break
 
                             @endswitch
-                            <td>{{$item->title}}</td>
+                            <td> <button class="btn btn-sm btn-link  btn-res-copy" data-toggle="tooltip" title="{{__('ueditor::lang.copy_url')}}" data-content="{{$item->url}}">{{$item->title}}</button></td>
                             <td class="text-center">{{$item->file_type_name}}</td>
                             <td class="text-center">{{$item->file_size}}</td>
                             <td class="text-center">@if($item->width){{$item->width}}*{{$item->height}} @else N/A @endif</td>
 
                             <td>{{$item->created_at}}</td>
                             <td>
-                                <button class="btn btn-primary btn-sm btn-res-copy" data-content="{{$item->url}}">{{__('ueditor::lang.copy_url')}}</button>
-                                <a href="{{route('resource.manager.destroy',$item->id)}}" class="btn btn-sm btn-danger btn-res-destroy ">{{__('ueditor::lang.delete')}}</a>
+
+{{--                                <a class="btn btn-sm btn-outline-info btn-res-edit"  data-toggle="tooltip" title="{{__('ueditor::lang.edit')}}" href="{{route('resource.manager.edit',$item->id)}}"><i class="fa fa-edit"></i></a>--}}
+                                <a class="btn btn-sm btn-outline-danger btn-res-destroy"    data-toggle="tooltip" title="{{__('ueditor::lang.delete')}}" href="{{route('resource.manager.destroy',$item->id)}}"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                     @empty
@@ -81,9 +82,12 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha256-x3YZWtRjM8bJqf48dFAv/qmgL68SI4jqNWeSLMZaMGA=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha256-CjSoeELFOcH0/uxWu6mC/Vlrc1AARqbm/jiiImDGV3s=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/noty@3.1.4/lib/noty.min.js" integrity="sha256-ITwLtH5uF4UlWjZ0mdHOhPwDpLoqxzfFCZXn1wE56Ps=" crossorigin="anonymous"></script>
+{{--<script src="https://cdn.jsdelivr.net/npm/ionicons@4.6.3/dist/ionicons.js" integrity="sha256-nO3ric+gFl0JC4umpii+10rqFL5PL7oQ0OBCOXdVh00=" crossorigin="anonymous"></script>--}}
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/js/all.min.js" integrity="sha256-qM7QTJSlvtPSxVRjVWNM2OfTAz/3k5ovHOKmKXuYMO4=" crossorigin="anonymous"></script>
 <script>
     function copyTextToClipboard(text) {
         var textArea = document.createElement("textarea");
@@ -124,6 +128,7 @@
     }
 
     $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
         $('body').off('click', '.btn-res-copy').on('click', '.btn-res-copy', function () {
             var text = $(this).attr('data-content');
             copyTextToClipboard(text);
