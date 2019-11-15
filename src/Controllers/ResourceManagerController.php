@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use ymlluo\Ueditor\Facades\Ueditor;
 use ymlluo\Ueditor\Models\UploadResource;
 
 class ResourceManagerController extends Controller
@@ -91,6 +92,12 @@ class ResourceManagerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $res = UploadResource::query()->findOrFail($id);
+        $path = $res->{'pathname'}.$res->{'filename'};
+        $ueditor = app('ueditor');
+        if( $result =  $ueditor->deleteResource($path)){
+            $res->delete();
+        }
+        return response()->json(['code'=>200,'data'=>['result'=>$result]]);
     }
 }

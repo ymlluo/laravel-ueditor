@@ -153,18 +153,6 @@ class Ueditor
     }
 
     /**
-     * delete file by path
-     * @param $path
-     */
-    public function deleteFile($path)
-    {
-        $this->storage->delete($path);
-        if ($this->isResourceEnable()) {
-            UploadResource::deleteRecords($path);
-        }
-    }
-
-    /**
      *  set file visibility url
      * @param $path
      * @param $visibility
@@ -186,9 +174,24 @@ class Ueditor
     }
 
 
+    /**
+     * is resource manager enabled
+     * @return \Illuminate\Config\Repository|mixed
+     */
     public function isResourceEnable()
     {
         return config('ueditor.resource.enable');
+    }
+
+    /**
+     * delete file by path
+     * @param $path
+     * @return bool
+     */
+    public function deleteResource($path)
+    {
+        $path = ltrim($path, '/');
+        return $this->storage->delete($path);
     }
 
 
@@ -333,7 +336,7 @@ class Ueditor
     protected function formatFilename(UploadedFile $file, $config)
     {
         $originExtension = $file->getClientOriginalExtension();
-        $originName = preg_replace('/[\/\<\>\{\}\*\$#\!]/','_',Str::before($file->getClientOriginalName(), $originExtension)). $originExtension;
+        $originName = preg_replace('/[\/\<\>\{\}\*\$#\!]/', '_', Str::before($file->getClientOriginalName(), $originExtension)) . $originExtension;
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
             $filename = Str::random($len) . '.' . $originExtension;

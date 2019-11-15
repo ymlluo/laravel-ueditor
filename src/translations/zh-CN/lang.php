@@ -1,5 +1,20 @@
 <?php
 return [
+    'resource_manager'=>'资源管理',
+    'id'=>'ID',
+    'title'=>'标题',
+    'preview'=>'预览',
+    'download'=>'下载',
+    'res_type'=>'文件类型',
+    'res_size'=>'文件大小',
+    'res_w_h'=>'文件尺寸',
+    'created_at'=>'创建时间',
+    'copy_url'=>'复制链接',
+    'operation'=>'操作',
+    'add'=>'添加',
+    'edit'=>'修改',
+    'delete'=>'删除',
+
     'image' => '图片',
     'audio' => '音频',
     'text' => '文档',
