@@ -38,6 +38,7 @@ trait UploaderTrait
                 }
             }
         } catch (\Exception $exception) {
+            throw $exception;
             return false;
         }
 

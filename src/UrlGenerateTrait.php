@@ -42,6 +42,12 @@ trait UrlGenerateTrait
         if ($adapter instanceof CachedAdapter) {
             $adapter = $adapter->getAdapter();
         }
+        if ($this->getDiskConfig('driver') == 'oss') {
+            return $this->getOssUrl($path);
+        } elseif ($adapter instanceof LocalAdapter) {
+            return $this->getLocalUrl($path);
+        }
+
 
         if (method_exists($adapter, 'getUrl')) {
             return $adapter->getUrl($path);
@@ -129,7 +135,7 @@ trait UrlGenerateTrait
             ltrim($path, '/'),
             $timeout
         );
-        if (!is_null($origin = $this->driver->getConfig()->get('url'))) {
+        if (!empty($origin = $this->getDiskConfig('url'))) {
             return $this->replaceOrigin($url, $origin);
         }
         return $url;
@@ -151,7 +157,7 @@ trait UrlGenerateTrait
             ltrim($path, '/'),
             Carbon::now()->addSeconds($timeout)
         );
-        if (!is_null($origin = $this->driver->getConfig()->get('url'))) {
+        if (!is_null($origin = $this->getDiskConfig('url'))) {
             return $this->replaceOrigin($url, $origin);
         }
         return $url;
@@ -171,7 +177,7 @@ trait UrlGenerateTrait
 
         $timeout = $this->expireSeconds($expiration);
         $url = $adapter->privateDownloadUrl($path, $timeout);
-        if (!is_null($origin = $this->driver->getConfig()->get('url'))) {
+        if (!empty($origin = $this->getDiskConfig('url'))) {
             return $this->replaceOrigin($url, $origin);
         }
         return $url;
@@ -206,6 +212,20 @@ trait UrlGenerateTrait
 
         return $path;
     }
+
+    protected function getOssUrl($path)
+    {
+        $ssl = $this->getDiskConfig('ssl') ? "https://" : "http://";
+        $endpoint = $this->getDiskConfig('endpoint');
+        $bucket = $this->getDiskConfig('bucket');
+        $url = $ssl . $bucket . '.' . $endpoint . '/' . ltrim($path, '/');
+
+        if (!empty($origin = $this->getDiskConfig('url'))) {
+            return $this->replaceOrigin($url, $origin);
+        }
+        return $url;
+    }
+
 
     /**
      * Get the URL for the file at the given path.
@@ -248,7 +268,11 @@ trait UrlGenerateTrait
      */
     protected function replaceOrigin($url, $origin)
     {
-        return preg_replace('/https?:\/\/.*?\//is', rtrim($origin) . '/', ltrim($url, '/'));
+        if (strpos($origin,'http') === false) {
+            $ssl = $this->getDiskConfig('ssl') ? "https://" : "http://";
+            $origin = $ssl . $origin;
+        }
+        return preg_replace('/https?:\/\/.*?\//is', rtrim($origin) . '/', rtrim($url, '/'));
     }
 
     /**

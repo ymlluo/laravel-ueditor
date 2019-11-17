@@ -29,7 +29,6 @@ class Ueditor
         if ($this->disk == 'public' && !file_exists(public_path('storage'))) {
             Artisan::call('storage:link');
         }
-
     }
 
 
@@ -82,7 +81,7 @@ class Ueditor
         $url = $this->url($fullName, $this->getDiskConfig('visibility'), $this->getExpire());
         $data = [
             'state' => 'SUCCESS',
-            'pathname' => $path,
+            'path' => $fullName,
             'filename' => $filename,
             'url' => $url,
             'creator_uid' => intval(auth()->id())
@@ -339,7 +338,7 @@ class Ueditor
     protected function formatFilename(UploadedFile $file, $config)
     {
         $originExtension = $file->getClientOriginalExtension();
-        $originName = preg_replace('/[\/\<\>\{\}\*\$#\!]/', '_', Str::before($file->getClientOriginalName(), $originExtension)) . $originExtension;
+        $originName = preg_replace('/[%#]/is', '_', Str::before($file->getClientOriginalName(), $originExtension)) . $originExtension;
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
             $filename = Str::random($len) . '.' . $originExtension;

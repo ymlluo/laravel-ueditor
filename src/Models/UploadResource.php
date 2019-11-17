@@ -18,7 +18,7 @@ class UploadResource extends Model
 
 
     protected $guarded = [];
-    protected $appends = ['file_type_name','file_size'];
+    protected $appends = ['file_type_name', 'file_size'];
 
 
     public function __construct(array $attributes = [])
@@ -121,7 +121,7 @@ class UploadResource extends Model
 
         $query = UploadResource::query()->where('file_type', UploadResource::FILE_TYPE_IMAGE)->orderByDesc('id');
         if ($path) {
-            $query->where('pathname', 'like', $path . '%');
+            $query->where('path', 'like', $path . '%');
         }
         if ($allowExtension) {
             $query->whereIn('extension', $allowExtension);
@@ -146,7 +146,7 @@ class UploadResource extends Model
     {
         $query = UploadResource::query()->orderByDesc('id');
         if ($path) {
-            $query->where('pathname', 'like', $path . '%');
+            $query->where('path', 'like', $path . '%');
         }
         if ($allowExtension) {
             $query->whereIn('extension', $allowExtension);
@@ -168,11 +168,8 @@ class UploadResource extends Model
     public static function deleteRecords($path)
     {
         $paths = (array)$path;
-        foreach ($paths as $fullName) {
-            if (preg_match('/^(.*\/)(.*)/is', $fullName, $matchs)) {
-                $pathname = '/' . ltrim($matchs['1'], '/');
-                UploadResource::query()->where(['pathname' => $pathname, 'filename' => $matchs[2]])->delete();
-            }
+        foreach ($paths as $path) {
+            UploadResource::query()->where(['path' => $path])->delete();
         }
     }
 
@@ -184,11 +181,11 @@ class UploadResource extends Model
      */
     public static function updateUrl($path, $url)
     {
-        if (preg_match('/^(.*\/)(.*)/is', $path, $matchs)) {
-            $pathname = '/' . ltrim($matchs['1'], '/');
-            return UploadResource::query()->where(['pathname' => $pathname, 'filename' => $matchs[2]])->update(['url' => $url]);
+        if ($path) {
+            return UploadResource::query()->where(['path' => $path])->update(['url' => $url]);
         }
         return false;
+
     }
 
     public function getFileTypeNameAttribute()
@@ -199,22 +196,22 @@ class UploadResource extends Model
                 $name = trans('ueditor::lang.application');
                 break;
             case self::FILE_TYPE_IMAGE:
-                $name =trans('ueditor::lang.image');
+                $name = trans('ueditor::lang.image');
                 break;
             case self::FILE_TYPE_AUDIO:
-                $name =trans('ueditor::lang.audio');
+                $name = trans('ueditor::lang.audio');
                 break;
             case self::FILE_TYPE_VIDEO:
-                $name =trans('ueditor::lang.video');
+                $name = trans('ueditor::lang.video');
                 break;
             case self::FILE_TYPE_TEXT:
-                $name =trans('ueditor::lang.text');
+                $name = trans('ueditor::lang.text');
                 break;
             case  self::FILE_TYPE_OTHER:
-                $name =trans('ueditor::lang.other');
+                $name = trans('ueditor::lang.other');
                 break;
             default:
-                $name =trans('ueditor::lang.unknown_type');
+                $name = trans('ueditor::lang.unknown_type');
                 break;
         }
         return $name;

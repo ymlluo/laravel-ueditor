@@ -18,7 +18,7 @@ class CreateUploadResourcesTable extends Migration
             $table->string('title')->default('');
             $table->string('original')->default('');
             $table->string('filename')->default('');
-            $table->string('pathname', 500)->default('');
+            $table->string('path', 500)->default('');
             $table->string('thumbnail', 2048)->default('');
             $table->string('url', 2048)->default('');
             $table->string('sha1')->default('');
@@ -34,7 +34,7 @@ class CreateUploadResourcesTable extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->index('sha1');
             $table->index(['file_type']);
-            $table->index(['pathname', 'extension']);
+            $table->index(['path', 'extension']);
         });
     }
 

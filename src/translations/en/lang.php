@@ -1,7 +1,7 @@
 <?php
 return [
     'resource_manager'=>'resource manager',
-    'id'=>'res ID',
+    'id'=>'ID',
     'title'=>'title',
     'preview'=>'preview',
     'download'=>'download',
@@ -15,6 +15,12 @@ return [
     'edit'=>'edit',
     'delete'=>'delete',
 
+    'cancel'=>'Cancel',
+    'ok'=>'OK',
+    'res_confirm_delete_title'=>'Are you sure delete ?',
+    'res_confirm_delete_warning'=>'The URL of this resource will not be accessible after deletion. Please confirm that this resource is not being used.',
+    'delete_success'=>'delete success',
+    'delete_failed'=>'delete failed',
 
     'image' => 'image',
     'audio' => 'audio',

@@ -93,7 +93,7 @@ class ResourceManagerController extends Controller
     public function destroy($id)
     {
         $res = UploadResource::query()->findOrFail($id);
-        $path = $res->{'pathname'}.$res->{'filename'};
+        $path = $res->{'path'};
         $ueditor = app('ueditor');
         if( $result =  $ueditor->deleteResource($path)){
             $res->delete();

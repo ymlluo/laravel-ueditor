@@ -4,7 +4,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.1.4/lib/noty.css" integrity="sha256-p+PhKJEDqN9f5n04H+wNtGonV2pTXGmB4Zr7PZ3lJ/w=" crossorigin="anonymous">
@@ -79,6 +80,22 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="confirm-dialog-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm-dialog-title"></h5>
+            </div>
+            <div class="modal-body">
+               <div id="confirm-dialog-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-confirm-cancel" data-dismiss="modal">{{__('ueditor::lang.cancel')}}</button>
+                <button type="button" class="btn btn-primary btn-confirm-ok">{{__('ueditor::lang.ok')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -89,6 +106,11 @@
 {{--<script src="https://cdn.jsdelivr.net/npm/ionicons@4.6.3/dist/ionicons.js" integrity="sha256-nO3ric+gFl0JC4umpii+10rqFL5PL7oQ0OBCOXdVh00=" crossorigin="anonymous"></script>--}}
 <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/js/all.min.js" integrity="sha256-qM7QTJSlvtPSxVRjVWNM2OfTAz/3k5ovHOKmKXuYMO4=" crossorigin="anonymous"></script>
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     function copyTextToClipboard(text) {
         var textArea = document.createElement("textarea");
         textArea.style.position = 'fixed';
@@ -118,7 +140,7 @@
     function notify_msg($msg,$type = 'info'){
         new Noty({
             text: $msg,
-            timeout: 100,
+            timeout: 500,
             layout: 'center',
             type: $type,
             progressBar: false,
@@ -126,6 +148,7 @@
         }).show();
 
     }
+
 
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
@@ -137,16 +160,22 @@
         }).off('click', '.btn-res-destroy').on('click', '.btn-res-destroy', function () {
             var url = $(this).attr('href');
             var tr = $(this).closest('tr');
-            if (confirm('confirm delete ?')){
+            var $modal = $('#confirm-dialog-modal');
+            $('#confirm-dialog-title').text('{{__('ueditor::lang.res_confirm_delete_title')}}');
+            $('#confirm-dialog-content').text('{{__('ueditor::lang.res_confirm_delete_warning')}}');
+            $modal.modal();
+            $('.btn-confirm-ok').off('click').on('click',function () {
                 $.post(url,{'_method':"DELETE"}).done(function (response) {
                     console.log(response);
                     if (response.data.result){
                         tr.remove();
+                        notify_msg('{{__('ueditor::lang.delete_success')}}')
                     }else {
-                        notify_msg('delete failed!')
+                        notify_msg('{{__('ueditor::lang.delete_failed')}}')
                     }
-                })
-            }
+                });
+                $modal.modal('hide');
+            });
 
 
             return false;
