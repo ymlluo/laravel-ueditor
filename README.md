@@ -111,6 +111,7 @@ $ ln -s `pwd`/storage/app/public `pwd`/public/storage
 ```$xslt
 composer require jacobcyl/ali-oss-storage:^2.1
 ```
+> 注意:此 package 使用isCName 存在 Bug，会导致上传失败，但是也没有找到更好的替代库 ，如需使用自定义域名或者 CDN 域名请配置  'url' => env('ALI_OSS_URL', '') 
 2. 在config/filesystems 文件中添加 disks 配置
 ```php
         'oss' => [
@@ -206,7 +207,7 @@ composer require league/flysystem-aws-s3-v3
 {
     "fileInfo": {
         "state": "SUCCESS",
-        "pathname": "\/uploads\/image\/2019\/1103\/",
+        "path": "\/uploads\/image\/2019\/1103\/S6zNUSSGmY4eHDsL.png",
         "filename": "S6zNUSSGmY4eHDsL.png",
         "url": "http:\/\/xxxx.oss-cn-beijing.aliyuncs.com\/uploads\/image\/2019\/1103\/S6zNUSSGmY4eHDsL.png?OSSAccessKeyId=LTAIfnpSloLRDHDj&Expires=1704164395&Signature=lCMSTW4BkzzjMmD4lbl3LI0rtF8%3D",
         "title": "S6zNUSSGmY4eHDsL.png",

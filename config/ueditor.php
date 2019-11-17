@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'disk' => 'oss',
+    'disk' => 'public',
     'spit_size' => 10 * 1024 * 1024, //超过10M 的文件上传到 OSS、COS、AWS S3、七牛 等时，使用分片上传
     'route' => [
         'url' => '/serv/ueditor/v1/server', //服务端地址，需要修改前端 ueditor.config.js 中的 serverUrl
         'options' => [
-            'middleware' => ['web','auth'] //正式环境建议取消注释，使用 auth middleware
+//            'middleware' => ['web','auth'] //正式环境建议取消注释，使用 auth middleware
         ],
         'cors' =>"*" // 默认支持所有跨域请求，支持指定origin 例如 ['http://www.baidu.com'],false 为关闭跨域请求
     ],
