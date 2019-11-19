@@ -79,7 +79,12 @@ class ResourceManagerController extends Controller
      */
     public function edit($id)
     {
-        //
+        $item = UploadResource::query()->findOrFail($id);
+        $fileTypes = (new UploadResource)->fileTypeMaps();
+        foreach ($fileTypes as $k => &$arr) {
+            $arr['checked'] = ($k == $item->file_type) ? true : false;
+        }
+        return view('ueditor::resource_manager.edit')->with(compact('item', 'fileTypes'));
     }
 
     /**
