@@ -2,6 +2,7 @@
 
 此 Laravel 5 Package 是 Ueditor 的后端服务。
 
+* 支持 Laravel >= 5.5 版本
 * 基于 laravel的storage 实现文件的管理上传等
 * 支持 本地、阿里云 OSS、腾讯COS、七牛，AWS S3,京东云 OSS 等（理论支持全部 Flysystem Adapter）
 * 后端支持大文件分片上传
@@ -23,11 +24,11 @@ $ composer require ymlluo/laravel-ueditor
 1. 添加下面一行到 config/app.php 中 providers 部分：
 > Laravel > 5.5 支持 Package Auto-Discovery 无需手动添加配置
   ```
-   ymlluo\\Ueditor\\UeditorServiceProvider::class
+   ymlluo\Ueditor\UeditorServiceProvider::class
 ```
 2.如果使用文件管理功能建议在 config/app.php 中的 aliases 部分添加 （API 参考 api_doc）
 ```$xslt
-  "Ueditor": "ymlluo\\Ueditor\\Facades\\Ueditor"
+  "Ueditor" => ymlluo\Ueditor\Facades\Ueditor::class
 ```
 3.发布配置文件
 ```$xslt
@@ -261,6 +262,7 @@ composer require league/flysystem-aws-s3-v3
 ```
 
 ## TODO
+- [ ] Laravel 小于 5.5 版本支持
 - [ ] OSS 服务端签名后直传
 
 ## License
