@@ -31,7 +31,7 @@
                 @foreach($fileTypes as $k=>$v)
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" name="file_type[]" {{$v['checked']?'checked':''}} id="res-type-{{$k}}" value="{{$k}}">
-                        <label class="form-check-label" for="res-type-{{$k}}" >{{$v['name']}}</label>
+                        <label class="form-check-label" for="res-type-{{$k}}">{{$v['name']}}</label>
                     </div>
                 @endforeach
             </div>
@@ -88,8 +88,7 @@
 
                     <td>{{$item->created_at}}</td>
                     <td>
-
-                        {{--                                <a class="btn btn-sm btn-outline-info btn-res-edit"  data-toggle="tooltip" title="{{__('ueditor::lang.edit')}}" href="{{route('resource.manager.edit',$item->id)}}"><i class="fa fa-edit"></i></a>--}}
+                        <a class="btn btn-sm btn-outline-info btn-res-edit" data-toggle="tooltip" title="{{__('ueditor::lang.edit')}}" href="{{route('resource.manager.edit',$item->id)}}"><i class="fa fa-edit"></i></a>
                         <a class="btn btn-sm btn-outline-danger btn-res-destroy" data-toggle="tooltip" title="{{__('ueditor::lang.delete')}}" href="{{route('resource.manager.destroy',$item->id)}}"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
@@ -120,6 +119,8 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="res-edit-dialog-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -206,6 +207,26 @@
 
             return false;
 
+        }).off('click','.btn-res-edit').on('click','.btn-res-edit',function () {
+            var url = $(this).attr('href');
+            var editModal = $('#res-edit-dialog-modal');
+            $.get(url).done(function (response) {
+                console.log(response);
+                editModal.html(response).modal('show');
+                $('.btn-edit-store-ok').click(function () {
+                    var form = $(this).closest('form');
+                    var url = form.attr('action');
+                    $.post(url,form.serialize()).done(function (response) {
+                        if (response.code == 200){
+                            editModal.modal('hide');
+                        }
+                        notify_msg(response.msg)
+                    });
+                    return false;
+
+                })
+            });
+            return false;
         })
     })
 </script>
