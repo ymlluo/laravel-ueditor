@@ -57,7 +57,11 @@ class ResourceManagerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $id = $request->get('id');
+        $data = $request->only(['title','file_type']);
+        $item = UploadResource::query()->findOrFail($id);
+        $item->update($data);
+        return response()->json(['code' => 200, 'msg'=>trans('ueditor::lang.store_success')]);
     }
 
     /**
@@ -84,7 +88,7 @@ class ResourceManagerController extends Controller
         foreach ($fileTypes as $k => &$arr) {
             $arr['checked'] = ($k == $item->file_type) ? true : false;
         }
-        return view('ueditor::resource_manager.edit')->with(compact('item', 'fileTypes'));
+        return view('ueditor::resource_manager.edit')->with(compact('item', 'fileTypes'))->render();
     }
 
     /**

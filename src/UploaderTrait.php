@@ -20,7 +20,7 @@ trait UploaderTrait
     public function uploader($path, $filename, UploadedFile $file)
     {
         try {
-            $options = ['disk' => $this->disk, 'visibility' => $this->getDiskConfig('visibility')];
+            $options = ['disk' => $this->disk, 'visibility' => $this->getDiskConfig('visibility','public')];
             $adapter = $this->driver->getAdapter();
             $fullName = ltrim($path . $filename, '/');
             if ($file->getSize() < $this->spit_size) {

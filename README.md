@@ -3,7 +3,7 @@
 此 Laravel 5 Package 是 Ueditor 的后端服务。
 
 * 基于 laravel的storage 实现文件的管理上传等
-* 支持 本地、阿里云 OSS、腾讯COS、七牛，AWS S3等（理论支持全部 Flysystem Adapter）
+* 支持 本地、阿里云 OSS、腾讯COS、七牛，AWS S3,京东云 OSS 等（理论支持全部 Flysystem Adapter）
 * 后端支持大文件分片上传
 * 提供上传文件管理，重复文件上传时直接返回结果
 * 提供上传完成后的 Event 支持
@@ -185,12 +185,14 @@ composer require overtrue/laravel-filesystem-qiniu
 ### AWS S3 支持
 
 
-
 1. 推荐安装 league/flysystem-aws-s3-v3
 ```$xslt
 composer require league/flysystem-aws-s3-v3
 ```
 2. 在config/filesystems 文件中添加 disks 配置
+
+ > 特别注意! AWS S3 v4 版本的 SDK 设置签名链接 最多支持 一周的时间
+ 
 ```php
         's3' => [
             'driver' => 's3',
@@ -200,8 +202,33 @@ composer require league/flysystem-aws-s3-v3
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'visibility' => 'public',
-            'expiration' =>0
+            'expiration' => 7 * 24 * 60  //The expiration date of a signature version 4 presigned URL must be less than one week
         ],
+```
+### 京东云 OSS
+
+1.京东云 OSS 使用兼容 AWS S3 的 SDK ,推荐安装 league/flysystem-aws-s3-v3
+
+```$xslt
+ composer require league/flysystem-aws-s3-v3
+ ```
+ 2. 在config/filesystems 文件中添加 disks 配置
+ 
+ > 特别注意! AWS S3 v4 版本的 SDK 设置签名链接 最多支持 一周的时间
+ 
+```php
+        'jd' => [
+            'driver' => 's3',
+            'key' => env('JD_ACCESS_KEY_ID'),
+            'secret' => env('JD_SECRET_ACCESS_KEY'),
+            'region' => env('JD_DEFAULT_REGION', 's3.cn-north-1'),
+            'endpoint' => env('JD_ENDPOINT', 's3.cn-north-1.jdcloud-oss.com'),
+            'bucket' => env('JD_BUCKET'),
+            'url' => env('JD_URL'),
+            'visibility' => 'private',
+            'expiration' => 7 * 24 * 60  //The expiration date of a signature version 4 presigned URL must be less than one week
+        ],
+
 ```
 
 ### 事件
