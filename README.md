@@ -202,7 +202,7 @@ composer require league/flysystem-aws-s3-v3
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'visibility' => 'public',
-            'expiration' => 7 * 24 * 60  //The expiration date of a signature version 4 presigned URL must be less than one week
+            'expiration' => 7 * 24 * 60 * 60  //The expiration date of a signature version 4 presigned URL must be less than one week
         ],
 ```
 ### 京东云 OSS
@@ -226,7 +226,7 @@ composer require league/flysystem-aws-s3-v3
             'bucket' => env('JD_BUCKET'),
             'url' => env('JD_URL'),
             'visibility' => 'private',
-            'expiration' => 7 * 24 * 60  //The expiration date of a signature version 4 presigned URL must be less than one week
+            'expiration' => 7 * 24 * 60 * 60  //The expiration date of a signature version 4 presigned URL must be less than one week
         ],
 
 ```
