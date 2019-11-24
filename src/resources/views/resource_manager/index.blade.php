@@ -11,22 +11,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.1.4/lib/noty.css" integrity="sha256-p+PhKJEDqN9f5n04H+wNtGonV2pTXGmB4Zr7PZ3lJ/w=" crossorigin="anonymous">
 
 
-    <title>{{__('ueditor::lang.resource_manager')}}</title>
+    <title>{{trans('ueditor::lang.resource_manager')}}</title>
 </head>
 <body>
 <div class="container">
 
     <form class="form-horizontal border rounded p-3 my-3 ">
-        <h3 class="text-center text-black-50">{{__('ueditor::lang.resource_manager')}}</h3>
+        <h3 class="text-center text-black-50">{{trans('ueditor::lang.resource_manager')}}</h3>
         <div class="form-group row">
-            <label class="col-control-label col-sm-2">{{__('ueditor::lang.title')}} </label>
+            <label class="col-control-label col-sm-2">{{trans('ueditor::lang.title')}} </label>
             <div class="col-sm-8">
                 <input class="form-control" type="text" name="title" autocomplete="off" value="{{request('title')}}">
             </div>
 
         </div>
         <div class="form-group row">
-            <label class="col-control-label col-sm-2">{{__('ueditor::lang.resource_type')}} </label>
+            <label class="col-control-label col-sm-2">{{trans('ueditor::lang.resource_type')}} </label>
             <div class="col-sm-8">
                 @foreach($fileTypes as $k=>$v)
                     <div class="form-check form-check-inline">
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary"><i class="fa fa-search"></i> {{__('ueditor::lang.search')}}</button>
+            <button class="btn btn-primary"><i class="fa fa-search"></i> {{trans('ueditor::lang.search')}}</button>
         </div>
 
     </form>
@@ -45,42 +45,35 @@
         <table class="table table-sm table-hover table-bordered table-condensed">
             <thead>
             <tr>
-                <th scope="col">{{__('ueditor::lang.id')}}</th>
-                <th scope="col">{{__('ueditor::lang.preview')}}</th>
-                <th scope="col">{{__('ueditor::lang.title')}}</th>
-                <th scope="col">{{__('ueditor::lang.res_type')}}</th>
-                <th scope="col">{{__('ueditor::lang.res_size')}}</th>
-                <th scope="col">{{__('ueditor::lang.res_w_h')}}</th>
-                <th scope="col">{{__('ueditor::lang.created_at')}}</th>
-                <th scope="col">{{__('ueditor::lang.operation')}}</th>
+                <th scope="col">{{trans('ueditor::lang.id')}}</th>
+                <th scope="col">{{trans('ueditor::lang.preview')}}</th>
+                <th scope="col">{{trans('ueditor::lang.title')}}</th>
+                <th scope="col">{{trans('ueditor::lang.res_type')}}</th>
+                <th scope="col">{{trans('ueditor::lang.res_size')}}</th>
+                <th scope="col">{{trans('ueditor::lang.res_w_h')}}</th>
+                <th scope="col">{{trans('ueditor::lang.created_at')}}</th>
+                <th scope="col">{{trans('ueditor::lang.operation')}}</th>
             </tr>
             </thead>
             <tbody>
             @forelse($items as $item)
                 <tr>
                     <th scope="row">{{$item->id}}</th>
-                    {{--                        <td>{{$item->title}}</td>--}}
-                    @switch($item->{'file_type'})
-                        @case(\ymlluo\Ueditor\Models\UploadResource::FILE_TYPE_IMAGE)
+                    @if($item->file_type == 200)
                         <td>
                             <a data-fancybox href="{{ $item->{'url'} }}"><img style="max-width: 42px;" class="img-responsive" src="{{$item->url}}"></a>
                         </td>
-                        @break
-                        @case(\ymlluo\Ueditor\Models\UploadResource::FILE_TYPE_VIDEO)
+                    @elseif($item->file_type == 400)
                         <td><a data-fancybox data-width="640" data-height="360" href="{{ $item->{'url'} }}">
                                 {{__('ueditor::lang.preview')}}
                             </a></td>
-
-                        @break
-                        @default
+                    @else
                         <td><a target="_blank" href="{{ $item->{'url'} }}">
                                 {{__('ueditor::lang.download')}}
                             </a></td>
-                        @break
-
-                    @endswitch
+                    @endif
                     <td>
-                        <button class="btn btn-sm btn-link  btn-res-copy" data-toggle="tooltip" title="{{__('ueditor::lang.copy_url')}}" data-content="{{$item->url}}">{{$item->title}}</button>
+                        <button class="btn btn-sm btn-link  btn-res-copy" data-toggle="tooltip" title="{{trans('ueditor::lang.copy_url')}}" data-content="{{$item->url}}">{{$item->title}}</button>
                     </td>
                     <td class="text-center">{{$item->file_type_name}}</td>
                     <td class="text-center">{{$item->file_size}}</td>
@@ -88,8 +81,8 @@
 
                     <td>{{$item->created_at}}</td>
                     <td>
-                        <a class="btn btn-sm btn-outline-info btn-res-edit" data-toggle="tooltip" title="{{__('ueditor::lang.edit')}}" href="{{route('resource.manager.edit',$item->id)}}"><i class="fa fa-edit"></i></a>
-                        <a class="btn btn-sm btn-outline-danger btn-res-destroy" data-toggle="tooltip" title="{{__('ueditor::lang.delete')}}" href="{{route('resource.manager.destroy',$item->id)}}"><i class="fa fa-trash"></i></a>
+                        <a class="btn btn-sm btn-outline-info btn-res-edit" data-toggle="tooltip" title="{{trans('ueditor::lang.edit')}}" href="{{route('resource.manager.edit',$item->id)}}"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-sm btn-outline-danger btn-res-destroy" data-toggle="tooltip" title="{{trans('ueditor::lang.delete')}}" href="{{route('resource.manager.destroy',$item->id)}}"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
             @empty
@@ -113,8 +106,8 @@
                 <div id="confirm-dialog-content"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-confirm-cancel" data-dismiss="modal">{{__('ueditor::lang.cancel')}}</button>
-                <button type="button" class="btn btn-primary btn-confirm-ok">{{__('ueditor::lang.ok')}}</button>
+                <button type="button" class="btn btn-secondary btn-confirm-cancel" data-dismiss="modal">{{trans('ueditor::lang.cancel')}}</button>
+                <button type="button" class="btn btn-primary btn-confirm-ok">{{trans('ueditor::lang.ok')}}</button>
             </div>
         </div>
     </div>
@@ -188,17 +181,17 @@
             var url = $(this).attr('href');
             var tr = $(this).closest('tr');
             var $modal = $('#confirm-dialog-modal');
-            $('#confirm-dialog-title').text('{{__('ueditor::lang.res_confirm_delete_title')}}');
-            $('#confirm-dialog-content').text('{{__('ueditor::lang.res_confirm_delete_warning')}}');
+            $('#confirm-dialog-title').text('{{trans('ueditor::lang.res_confirm_delete_title')}}');
+            $('#confirm-dialog-content').text('{{trans('ueditor::lang.res_confirm_delete_warning')}}');
             $modal.modal();
             $('.btn-confirm-ok').off('click').on('click', function () {
                 $.post(url, {'_method': "DELETE"}).done(function (response) {
                     console.log(response);
                     if (response.data.result) {
                         tr.remove();
-                        notify_msg('{{__('ueditor::lang.delete_success')}}')
+                        notify_msg('{{trans('ueditor::lang.delete_success')}}')
                     } else {
-                        notify_msg('{{__('ueditor::lang.delete_failed')}}')
+                        notify_msg('{{trans('ueditor::lang.delete_failed')}}')
                     }
                 });
                 $modal.modal('hide');

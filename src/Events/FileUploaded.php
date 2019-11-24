@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploaded implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use  InteractsWithSockets, SerializesModels;
 
     public $fileInfo;
     public $result;

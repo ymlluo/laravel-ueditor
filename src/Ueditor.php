@@ -64,7 +64,7 @@ class Ueditor
         }
         $fileInfo = $this->getFileInfo($file);
         if ($this->isResourceEnable()) {
-            $resource = UploadResource::query()->where('sha1', $fileInfo['sha1'])->first();
+            $resource = UploadResource::where('sha1', $fileInfo['sha1'])->first();
             if ($resource) {
                 $data = $resource->toArray();
                 $data['state'] = 'SUCCESS';

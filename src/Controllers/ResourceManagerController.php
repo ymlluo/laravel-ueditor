@@ -23,8 +23,7 @@ class ResourceManagerController extends Controller
         $size = intval(\request()->get('size', 15));
         $title = trim(\request()->get('title'));
         $file_types = array_map('intval', (array)\request()->get('file_type'));
-        $items = UploadResource::query()
-            ->when($title, function ($sql) use ($title) {
+        $items = UploadResource::when($title, function ($sql) use ($title) {
                 $sql->where('title', 'like', '%' . $title . '%');
             })
             ->when($file_types, function ($sql) use ($file_types) {
@@ -59,7 +58,7 @@ class ResourceManagerController extends Controller
     {
         $id = $request->get('id');
         $data = $request->only(['title','file_type']);
-        $item = UploadResource::query()->findOrFail($id);
+        $item = UploadResource::findOrFail($id);
         $item->update($data);
         return response()->json(['code' => 200, 'msg'=>trans('ueditor::lang.store_success')]);
     }
@@ -83,7 +82,7 @@ class ResourceManagerController extends Controller
      */
     public function edit($id)
     {
-        $item = UploadResource::query()->findOrFail($id);
+        $item = UploadResource::findOrFail($id);
         $fileTypes = (new UploadResource)->fileTypeMaps();
         foreach ($fileTypes as $k => &$arr) {
             $arr['checked'] = ($k == $item->file_type) ? true : false;
@@ -111,7 +110,7 @@ class ResourceManagerController extends Controller
      */
     public function destroy($id)
     {
-        $res = UploadResource::query()->findOrFail($id);
+        $res = UploadResource::findOrFail($id);
         $path = $res->{'path'};
         $ueditor = app('ueditor');
         if ($result = $ueditor->deleteResource($path)) {
