@@ -24,12 +24,8 @@ trait UploaderTrait
             $adapter = $this->driver->getAdapter();
             $fullName = ltrim($path . $filename, '/');
             if ($file->getSize() < $this->spit_size) {
-                if (version_compare(app()->version(),'5.4.0','lt')){
-                    return $this->storage->putFileAs($path, $file, $filename, $options['visibility']);
-                }
-                return $this->storage->putFileAs($path, $file, $filename, $options);
-
-
+                $stream = fopen($file->getRealPath(), 'r');
+                return $this->storage->putStream($fullName, $stream, $options);
             } else {
                 if ($adapter instanceof AwsS3Adapter) {
                     return $this->uploadMultiAws($adapter, $fullName, $file);

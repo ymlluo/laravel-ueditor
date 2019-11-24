@@ -17,7 +17,6 @@ class UeditorServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/resources/views', 'ueditor');
         $this->loadTranslationsFrom(__DIR__.'/translations', 'ueditor');
-        $this->loadMigrationsFrom(__DIR__ . '/migrations');
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
@@ -26,8 +25,9 @@ class UeditorServiceProvider extends ServiceProvider
             $router->any(config('ueditor.route.url', '/serv/ueditor/server'), 'ServiceController@serve')->middleware(EditorCrossRequest::class);
         });
         if (config('ueditor.resource.enable')){
-
-            Event::listen(FileUploaded::class,UploadResourceSave::class);
+            if (version_compare(app()->version(),'5.3.0','>=')){
+                Event::listen(FileUploaded::class,UploadResourceSave::class);
+            }
             $router->group(array_merge(['namespace' => __NAMESPACE__], config('ueditor.route.options', [])), function ($router) {
                 $router->get(config('ueditor.resource.route.index'), 'Controllers\ResourceManagerController@index')->name('resource.manager.index')->middleware(EditorCrossRequest::class);
                 $router->get(config('ueditor.resource.route.edit'), 'Controllers\ResourceManagerController@edit')->name('resource.manager.edit')->middleware(EditorCrossRequest::class);
@@ -48,7 +48,7 @@ class UeditorServiceProvider extends ServiceProvider
         $configPath = __DIR__ . '/../config/ueditor.php';
         $this->mergeConfigFrom($configPath, 'ueditor');
         $this->publishes([$configPath => config_path('ueditor.php')], 'config');
-
+        $this->publishes([__DIR__ . '/migrations' => $this->app->databasePath() . '/migrations'], 'migrations');
         // Register the service the package provides.
         $this->app->singleton('ueditor', function ($app) {
             return new Ueditor;

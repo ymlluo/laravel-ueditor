@@ -26,7 +26,7 @@ class Ueditor
         $this->spit_size = config('ueditor.spit_size');
         $this->storage = Storage::disk($this->disk);
         $this->driver = $this->storage->getDriver();
-        if ($this->disk == 'public' && !file_exists(public_path('storage'))) {
+        if ($this->disk == 'public' && !file_exists(public_path('storage'))&& version_compare(app()->version(),'5.3.0','>=')) {
             Artisan::call('storage:link');
         }
 //        dump($this->storage->getDriver());
@@ -88,7 +88,9 @@ class Ueditor
             'creator_uid' => intval(auth()->id())
         ];
         $data = array_merge($fileInfo, $data);
-        event(new FileUploaded($data));
+        if (version_compare(app()->version(),'5.3.0','>=')){
+            event(new FileUploaded($data));
+        }
         return response()->json($data);
     }
 
