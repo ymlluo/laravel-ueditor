@@ -93,7 +93,7 @@
         </table>
     </div>
     <div>
-        {!! $items->links() !!}
+        {!! $items->appends(request()->except(['page']))->render() !!}
     </div>
 </div>
 <div class="modal fade" id="confirm-dialog-modal" tabindex="-1" role="dialog" aria-hidden="true">

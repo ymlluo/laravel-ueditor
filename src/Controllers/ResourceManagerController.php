@@ -23,13 +23,14 @@ class ResourceManagerController extends Controller
         $size = intval(\request()->get('size', 15));
         $title = trim(\request()->get('title'));
         $file_types = array_map('intval', (array)\request()->get('file_type'));
-        $items = UploadResource::when($title, function ($sql) use ($title) {
-                $sql->where('title', 'like', '%' . $title . '%');
-            })
-            ->when($file_types, function ($sql) use ($file_types) {
-                $sql->whereIn('file_type', $file_types);
-            })
-            ->orderByDesc('id')->paginate($size);
+        $sql = UploadResource::query();
+        if ($title){
+            $sql->where('title', 'like', '%' . $title . '%');
+        }
+        if ($file_types){
+            $sql->whereIn('file_type', $file_types);
+        }
+        $items =$sql->orderBy('id','desc')->paginate($size);
 
         $fileTypes = (new UploadResource)->fileTypeMaps();
         foreach ($fileTypes as $k => &$arr) {

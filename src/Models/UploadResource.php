@@ -14,9 +14,6 @@ class UploadResource extends Model
     const FILE_TYPE_TEXT = 500;
     const FILE_TYPE_OTHER = 600;
 
-    const TABLE_FIELDS_KEY = 'ueditor:resource:manager:tables:fields';
-
-
     protected $guarded = [];
     protected $appends = ['file_type_name', 'file_size'];
     public $table_fields = ['id', 'title', 'filename', 'original', 'path', 'url', 'sha1', 'extension', 'mime_type', 'file_type', 'width', 'height', 'size', 'extend', 'creator_uid', 'created_at', 'updated_at'];
