@@ -17,10 +17,10 @@ trait UploaderTrait
      * @param UploadedFile $file
      * @return bool|false|mixed|string|null
      */
-    public function uploader($path, $filename, UploadedFile $file)
+    public function uploader($path, $filename, $file)
     {
         try {
-            $options = ['disk' => $this->disk, 'visibility' => $this->getDiskConfig('visibility','public')];
+            $options = ['disk' => $this->disk, 'visibility' => $this->getDiskConfig('visibility', 'public')];
             $adapter = $this->driver->getAdapter();
             $fullName = ltrim($path . $filename, '/');
             if ($file->getSize() < $this->spit_size) {
