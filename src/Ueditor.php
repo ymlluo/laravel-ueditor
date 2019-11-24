@@ -338,7 +338,7 @@ class Ueditor
     protected function formatFilename(UploadedFile $file, $config)
     {
         $originExtension = $file->getClientOriginalExtension();
-        $originName = preg_replace('/[%#]/is', '_', Str::before($file->getClientOriginalName(), $originExtension)) . $originExtension;
+        $originName = preg_replace('/[%#]/is', '_', explode($originExtension, $file->getClientOriginalName())[0]). $originExtension;
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
             $filename = Str::random($len) . '.' . $originExtension;

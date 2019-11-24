@@ -19,7 +19,7 @@ class UploadResource extends Model
 
     protected $guarded = [];
     protected $appends = ['file_type_name', 'file_size'];
-
+    public $table_fields = ['id', 'title', 'filename', 'original', 'path', 'url', 'sha1', 'extension', 'mime_type', 'file_type', 'width', 'height', 'size', 'extend', 'creator_uid', 'created_at', 'updated_at'];
 
     public function __construct(array $attributes = [])
     {
@@ -35,8 +35,7 @@ class UploadResource extends Model
      */
     public static function getFields()
     {
-        $self = new self();
-        return $self->getConnection()->getSchemaBuilder()->getColumnListing($self->getTable());
+        return (new self())->table_fields;
     }
 
 
