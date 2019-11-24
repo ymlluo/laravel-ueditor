@@ -14,7 +14,7 @@ return [
     'add'=>'添加',
     'edit'=>'修改',
     'delete'=>'删除',
-
+    'search'=>'搜索',
 
     'cancel'=>'取消',
     'ok'=>'确定',
@@ -23,6 +23,11 @@ return [
     'delete_success'=>'删除成功',
     'delete_failed'=>'删除失败',
 
+    'store_success'=>'保存成功',
+    'store_failed'=>'保存失败',
+
+
+    'resource_type'=>'素材类型',
     'image' => '图片',
     'audio' => '音频',
     'text' => '文档',

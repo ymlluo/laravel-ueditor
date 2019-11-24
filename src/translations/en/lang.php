@@ -14,6 +14,8 @@ return [
     'add'=>'add',
     'edit'=>'edit',
     'delete'=>'delete',
+    'search'=>'search',
+
 
     'cancel'=>'Cancel',
     'ok'=>'OK',
@@ -22,6 +24,11 @@ return [
     'delete_success'=>'delete success',
     'delete_failed'=>'delete failed',
 
+    'store_success'=>'store success',
+    'store_failed'=>'store failed',
+
+
+    'resource_type'=>'resource type',
     'image' => 'image',
     'audio' => 'audio',
     'text' => 'text',

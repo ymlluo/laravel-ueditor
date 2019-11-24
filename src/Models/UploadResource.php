@@ -189,32 +189,41 @@ class UploadResource extends Model
 
     public function getFileTypeNameAttribute()
     {
+        return $this->getFileTypeLabel($this->getAttribute('file_type'));
 
-        switch ($this->getAttribute('file_type')) {
-            case self::FILE_TYPE_APPLICATION:
-                $name = trans('ueditor::lang.application');
-                break;
-            case self::FILE_TYPE_IMAGE:
-                $name = trans('ueditor::lang.image');
-                break;
-            case self::FILE_TYPE_AUDIO:
-                $name = trans('ueditor::lang.audio');
-                break;
-            case self::FILE_TYPE_VIDEO:
-                $name = trans('ueditor::lang.video');
-                break;
-            case self::FILE_TYPE_TEXT:
-                $name = trans('ueditor::lang.text');
-                break;
-            case  self::FILE_TYPE_OTHER:
-                $name = trans('ueditor::lang.other');
-                break;
-            default:
-                $name = trans('ueditor::lang.unknown_type');
-                break;
-        }
-        return $name;
     }
+
+    public function getFileTypeLabel($file_type)
+    {
+        $labels = $this->fileTypeMaps();
+        return $labels[$file_type]['name'] ?? trans('ueditor::lang.unknown_type');
+    }
+
+    public function fileTypeMaps()
+    {
+        $labels = [
+            self::FILE_TYPE_APPLICATION => [
+                'name' => trans('ueditor::lang.application')
+            ],
+            self::FILE_TYPE_IMAGE => [
+                'name' => trans('ueditor::lang.image')
+            ],
+            self::FILE_TYPE_AUDIO => [
+                'name' => trans('ueditor::lang.audio')
+            ],
+            self::FILE_TYPE_VIDEO => [
+                'name' => trans('ueditor::lang.video')
+            ],
+            self::FILE_TYPE_TEXT => [
+                'name' => trans('ueditor::lang.text')
+            ],
+            self::FILE_TYPE_OTHER => [
+                'name' => trans('ueditor::lang.other')
+            ]
+        ];
+        return $labels;
+    }
+
 
     /**
      * get human file size

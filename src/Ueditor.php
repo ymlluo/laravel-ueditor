@@ -29,6 +29,7 @@ class Ueditor
         if ($this->disk == 'public' && !file_exists(public_path('storage'))) {
             Artisan::call('storage:link');
         }
+//        dump($this->storage->getDriver());
     }
 
 
@@ -78,7 +79,7 @@ class Ueditor
             return $this->fail(trans('ueditor::lang.file_upload_error'));
         }
 
-        $url = $this->url($fullName, $this->getDiskConfig('visibility'), $this->getExpire());
+        $url = $this->url($fullName, $this->getDiskConfig('visibility','public'), $this->getExpire());
         $data = [
             'state' => 'SUCCESS',
             'path' => $fullName,
@@ -256,7 +257,7 @@ class Ueditor
      */
     protected function isSignUrl($visibility = '')
     {
-        $visibility = $visibility ?: $this->getDiskConfig('visibility');
+        $visibility = $visibility ?: $this->getDiskConfig('visibility','public');
         return $visibility == 'private';
     }
 

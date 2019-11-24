@@ -105,6 +105,7 @@ trait UrlGenerateTrait
      */
     protected function getAwsTemporaryUrl(AwsS3Adapter $adapter, $path, $expiration, $options)
     {
+        $path = ltrim($path,'/');
         $client = $adapter->getClient();
         $timeout = $this->expireSeconds($expiration);
         $command = $client->getCommand('GetObject', array_merge([
@@ -176,7 +177,7 @@ trait UrlGenerateTrait
     {
 
         $timeout = $this->expireSeconds($expiration);
-        $url = $adapter->privateDownloadUrl($path, $timeout);
+        $url = $adapter->privateDownloadUrl(ltrim($path,'/'), $timeout);
         if (!empty($origin = $this->getDiskConfig('url'))) {
             return $this->replaceOrigin($url, $origin);
         }
@@ -236,6 +237,7 @@ trait UrlGenerateTrait
      */
     protected function getAwsUrl($adapter, $path)
     {
+        $path = ltrim($path,'/');
         // If an explicit base URL has been set on the disk configuration then we will use
         // it as the base URL instead of the default path. This allows the developer to
         // have full control over the base path for this filesystem's generated URLs.

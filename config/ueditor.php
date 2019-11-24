@@ -16,8 +16,8 @@ return [
         'custom_table' => '', //默认上传的表名为 upload_resources,可以自定义表名,
         'route' =>[
             'index'=>    '/serv/resource/index', //资源列表
-            'edit'=>    '/serv/resource/edit',  // todo 编辑功能
-            'store'=>    '/serv/resource/store', //todo 编辑后保存
+            'edit'=>    '/serv/resource/edit/{id}',
+            'store'=>    '/serv/resource/store',
             'destroy'=>    '/serv/resource/destroy/{id}' //删除资源
         ]
     ],
@@ -79,7 +79,7 @@ return [
         'videoPathFormat' => '/uploads/video/{yyyy}/{mm}{dd}/', /* 上传保存路径,可以自定义保存路径和文件名格式 */
         'videoFileName' => '{filename}',
         'videoUrlPrefix' => '', /* 视频访问路径前缀 */
-        'videoMaxSize' => 102400000, /* 上传大小限制，单位B，默认100MB */
+        'videoMaxSize' => 2048 * 1024 * 1024, /* 上传大小限制，单位B，默认 2048 MB */
         'videoAllowFiles' => [
             '.flv', '.swf', '.mkv', '.avi', '.rm', '.rmvb', '.mpeg', '.mpg',
             '.ogg', '.ogv', '.mov', '.wmv', '.mp4', '.webm', '.mp3', '.wav', '.mid',], /* 上传视频格式显示 */
@@ -90,7 +90,7 @@ return [
         'filePathFormat' => '/uploads/file/{yyyy}/{mm}{dd}/', /* 上传保存路径,可以自定义保存路径和文件名格式 */
         'fileFileName' => '{filename}',
         'fileUrlPrefix' => '', /* 文件访问路径前缀 */
-        'fileMaxSize' => 51200000, /* 上传大小限制，单位B，默认50MB */
+        'fileMaxSize' => 2048 * 1024 * 1024, /* 上传大小限制，单位B，默认 2048 MB */
         'fileAllowFiles' => [
             '.png', '.jpg', '.jpeg', '.gif', '.bmp',
             '.flv', '.swf', '.mkv', '.avi', '.rm', '.rmvb', '.mpeg', '.mpg',
