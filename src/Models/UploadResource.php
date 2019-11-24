@@ -14,12 +14,9 @@ class UploadResource extends Model
     const FILE_TYPE_TEXT = 500;
     const FILE_TYPE_OTHER = 600;
 
-    const TABLE_FIELDS_KEY = 'ueditor:resource:manager:tables:fields';
-
-
     protected $guarded = [];
     protected $appends = ['file_type_name', 'file_size'];
-
+    public $table_fields = ['id', 'title', 'filename', 'original', 'path', 'url', 'sha1', 'extension', 'mime_type', 'file_type', 'width', 'height', 'size', 'extend', 'creator_uid', 'created_at', 'updated_at'];
 
     public function __construct(array $attributes = [])
     {
@@ -35,8 +32,7 @@ class UploadResource extends Model
      */
     public static function getFields()
     {
-        $self = new self();
-        return $self->getConnection()->getSchemaBuilder()->getColumnListing($self->getTable());
+        return (new self())->table_fields;
     }
 
 
@@ -56,7 +52,7 @@ class UploadResource extends Model
 
         if ($data) {
             $data['file_type'] = self::getTypeByMimeType($data['mime_type']);
-            return UploadResource::query()->create($data);
+            return UploadResource::create($data);
         }
         return false;
     }
@@ -102,7 +98,7 @@ class UploadResource extends Model
     {
         $sha1 = sha1_file($file->getRealPath());
         $response = [];
-        if ($resource = UploadResource::query()->where('sha1', $sha1)->first()) {
+        if ($resource = UploadResource::where('sha1', $sha1)->first()) {
             $response = $resource->toArray();
             $response['state'] = 'SUCCESS';
         }
@@ -119,7 +115,7 @@ class UploadResource extends Model
     public static function getImages($start, $size, $path = '', $allowExtension = [])
     {
 
-        $query = UploadResource::query()->where('file_type', UploadResource::FILE_TYPE_IMAGE)->orderByDesc('id');
+        $query = UploadResource::where('file_type', UploadResource::FILE_TYPE_IMAGE)->orderBy('id','desc');
         if ($path) {
             $query->where('path', 'like', $path . '%');
         }
@@ -144,7 +140,7 @@ class UploadResource extends Model
      */
     public static function getFiles($start, $size, $path = '', $allowExtension = [])
     {
-        $query = UploadResource::query()->orderByDesc('id');
+        $query = UploadResource::orderBy('id','desc');
         if ($path) {
             $query->where('path', 'like', $path . '%');
         }
@@ -169,7 +165,7 @@ class UploadResource extends Model
     {
         $paths = (array)$path;
         foreach ($paths as $path) {
-            UploadResource::query()->where(['path' => $path])->delete();
+            UploadResource::where(['path' => $path])->delete();
         }
     }
 
@@ -182,7 +178,7 @@ class UploadResource extends Model
     public static function updateUrl($path, $url)
     {
         if ($path) {
-            return UploadResource::query()->where(['path' => $path])->update(['url' => $url]);
+            return UploadResource::where(['path' => $path])->update(['url' => $url]);
         }
         return false;
 

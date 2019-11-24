@@ -5,16 +5,15 @@ namespace ymlluo\Ueditor\Events;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploaded implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use  InteractsWithSockets, SerializesModels;
 
     public $fileInfo;
     public $result;
+
     /**
      * Create a new event instance.
      *
@@ -32,6 +31,8 @@ class FileUploaded implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('ueditor:file:uploaded');
+        if (version_compare(app()->version(), '5.3.0', '>=')) {
+            return new PrivateChannel('ueditor:file:uploaded');
+        }
     }
 }

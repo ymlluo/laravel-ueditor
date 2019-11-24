@@ -26,7 +26,7 @@ class Ueditor
         $this->spit_size = config('ueditor.spit_size');
         $this->storage = Storage::disk($this->disk);
         $this->driver = $this->storage->getDriver();
-        if ($this->disk == 'public' && !file_exists(public_path('storage'))) {
+        if ($this->disk == 'public' && !file_exists(public_path('storage')) && version_compare(app()->version(), '5.3.0', '>=')) {
             Artisan::call('storage:link');
         }
 //        dump($this->storage->getDriver());
@@ -64,7 +64,7 @@ class Ueditor
         }
         $fileInfo = $this->getFileInfo($file);
         if ($this->isResourceEnable()) {
-            $resource = UploadResource::query()->where('sha1', $fileInfo['sha1'])->first();
+            $resource = UploadResource::where('sha1', $fileInfo['sha1'])->first();
             if ($resource) {
                 $data = $resource->toArray();
                 $data['state'] = 'SUCCESS';
@@ -79,7 +79,7 @@ class Ueditor
             return $this->fail(trans('ueditor::lang.file_upload_error'));
         }
 
-        $url = $this->url($fullName, $this->getDiskConfig('visibility','public'), $this->getExpire());
+        $url = $this->url($fullName, $this->getDiskConfig('visibility', 'public'), $this->getExpire());
         $data = [
             'state' => 'SUCCESS',
             'path' => $fullName,
@@ -88,7 +88,9 @@ class Ueditor
             'creator_uid' => intval(auth()->id())
         ];
         $data = array_merge($fileInfo, $data);
-        event(new FileUploaded($data));
+        if (version_compare(app()->version(), '5.3.0', '>=')) {
+            event(new FileUploaded($data));
+        }
         return response()->json($data);
     }
 
@@ -257,7 +259,7 @@ class Ueditor
      */
     protected function isSignUrl($visibility = '')
     {
-        $visibility = $visibility ?: $this->getDiskConfig('visibility','public');
+        $visibility = $visibility ?: $this->getDiskConfig('visibility', 'public');
         return $visibility == 'private';
     }
 
@@ -336,10 +338,10 @@ class Ueditor
      * @param $config
      * @return string|null
      */
-    protected function formatFilename(UploadedFile $file, $config)
+    protected function formatFilename($file, $config)
     {
         $originExtension = $file->getClientOriginalExtension();
-        $originName = preg_replace('/[%#]/is', '_', Str::before($file->getClientOriginalName(), $originExtension)) . $originExtension;
+        $originName = preg_replace('/[%#]/is', '_', explode($originExtension, $file->getClientOriginalName())[0]) . $originExtension;
         if (preg_match('/\{rand:(\d+)\}/is', $config, $m)) {
             $len = $m[1] > 256 ? 256 : $m[1];
             $filename = Str::random($len) . '.' . $originExtension;
@@ -371,7 +373,7 @@ class Ueditor
      * @param UploadedFile $file
      * @return array
      */
-    protected function getFileInfo(UploadedFile $file)
+    protected function getFileInfo($file)
     {
         $data = array_fill_keys(['width', 'height'], 0);
         if (strpos($file->getMimeType(), 'image') === 0) {
