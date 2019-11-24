@@ -22,11 +22,11 @@ $ composer require ymlluo/laravel-ueditor
 1. 添加下面一行到 config/app.php 中 providers 部分：
 > Laravel > 5.5 支持 Package Auto-Discovery 无需手动添加配置
   ```
-   ymlluo\\Ueditor\\UeditorServiceProvider::class
+   ymlluo\Ueditor\UeditorServiceProvider::class
 ```
 2.如果使用文件管理功能建议在 config/app.php 中的 aliases 部分添加 （API 参考 api_doc）
 ```$xslt
-  "Ueditor": "ymlluo\\Ueditor\\Facades\\Ueditor"
+  "Ueditor" => "ymlluo\Ueditor\Facades\Ueditor"
 ```
 3.发布配置文件
 ```$xslt
