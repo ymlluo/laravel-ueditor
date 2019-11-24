@@ -1,7 +1,7 @@
 # laravel-UEditor
 
 此 Laravel 5 Package 是 Ueditor 的后端服务。
-
+* 支持 Laravel >= v5.1 版本
 * 基于 laravel的storage 实现文件的管理上传等
 * 支持 本地、阿里云 OSS、腾讯COS、七牛，AWS S3,京东云 OSS 等（理论支持全部 Flysystem Adapter）
 * 后端支持大文件分片上传
