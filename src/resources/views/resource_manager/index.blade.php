@@ -171,6 +171,11 @@
 
 
     $(function () {
+        $('.pagination li').each(function () {
+            if(! $(this).hasClass('page-item')){
+                $(this).addClass('page-item').find('a,span').addClass('page-link')
+            }
+        });
         $('[data-toggle="tooltip"]').tooltip();
         $('body').off('click', '.btn-res-copy').on('click', '.btn-res-copy', function () {
             var text = $(this).attr('data-content');
