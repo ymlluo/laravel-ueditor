@@ -242,7 +242,7 @@ composer require league/flysystem-aws-s3-v3
         "state": "SUCCESS",
         "path": "\/uploads\/image\/2019\/1103\/S6zNUSSGmY4eHDsL.png",
         "filename": "S6zNUSSGmY4eHDsL.png",
-        "url": "http:\/\/xxxx.oss-cn-beijing.aliyuncs.com\/uploads\/image\/2019\/1103\/S6zNUSSGmY4eHDsL.png?OSSAccessKeyId=LTAIfnpSloLRDHDj&Expires=1704164395&Signature=lCMSTW4BkzzjMmD4lbl3LI0rtF8%3D",
+        "url": "http:\/\/xxxx.oss-cn-beijing.aliyuncs.com\/uploads\/image\/2019\/1103\/S6zNUSSGmY4eHDsL.png?OSSAccessKeyId=xxxxx&Expires=1704164395&Signature=lCMSTW4BkzzjMmD4lbl3LI0rtF8%3D",
         "title": "S6zNUSSGmY4eHDsL.png",
         "original": "S6zNUSSGmY4eHDsL.png",
         "type": ".png",
